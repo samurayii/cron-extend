@@ -7,3 +7,6 @@
     hostname = "0.0.0.0"
     backlog = 511
     prefix = "/api"
+
+[manager]
+    jobs_path = "tests/jobs"

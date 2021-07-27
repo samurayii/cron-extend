@@ -4,19 +4,19 @@
         "logger": {
             "type": "object",
             "default": {},
-            "env": "TEMPLATE_LOGGER",
+            "env": "CRON_EXTEND_LOGGER",
             "properties": {
                 "name": {
                     "type": "string",
                     "default": "",
-                    "env": "TEMPLATE_LOGGER_NAME",
+                    "env": "CRON_EXTEND_LOGGER_NAME",
                     "minLength": 0,
                     "maxLength": 32
                 },
                 "levels": {
                     "type": "array",
                     "default": ["fatal","info","error","warn","debug","trace"],
-                    "env": "TEMPLATE_LOGGER_LEVELS",
+                    "env": "CRON_EXTEND_LOGGER_LEVELS",
                     "items": {
                         "type": "string",
                         "enum": ["fatal","info","error","warn","debug","trace"]
@@ -27,23 +27,23 @@
                 "bindings": {
                     "type": "object",
                     "default": {},
-                    "env": "TEMPLATE_LOGGER_BINDINGS"
+                    "env": "CRON_EXTEND_LOGGER_BINDINGS"
                 },
                 "output": {
                     "type": "object",
                     "default": {},
-                    "env": "TEMPLATE_LOGGER_OUTPUT",
+                    "env": "CRON_EXTEND_LOGGER_OUTPUT",
                     "properties": {
                         "timestamp": {
                             "type": "string",
                             "default": "full",
-                            "env": "TEMPLATE_LOGGER_OUTPUT_TIMESTAMP",
+                            "env": "CRON_EXTEND_LOGGER_OUTPUT_TIMESTAMP",
                             "enum": ["full","short","unix","none"]
                         },
                         "levels": {
                             "type": "array",
                             "default": ["fatal","info","error","warn","debug","trace"],
-                            "env": "TEMPLATE_LOGGER_OUTPUT_LEVELS",
+                            "env": "CRON_EXTEND_LOGGER_OUTPUT_LEVELS",
                             "items": {
                                 "type": "string",
                                 "enum": ["fatal","info","error","warn","debug","trace"]
@@ -54,7 +54,7 @@
                         "bindings": {
                             "type": "string",
                             "default": "no-wrapper",
-                            "env": "TEMPLATE_LOGGER_OUTPUT_BINDINGS",
+                            "env": "CRON_EXTEND_LOGGER_OUTPUT_BINDINGS",
                             "enum": ["square","bracket","none","no-wrapper"]
                         }
                     },
@@ -75,24 +75,24 @@
         "api": {
             "type": "object",
             "default": {},
-            "env": "TEMPLATE_API",
+            "env": "CRON_EXTEND_API",
             "properties": {
                 "enable": {
                     "type": "boolean",
                     "default": false,
-                    "env": "TEMPLATE_API_ENABLE"
+                    "env": "CRON_EXTEND_API_ENABLE"
                 },
                 "hostname": {
                     "type": "string",
                     "default": "0.0.0.0",
                     "minLength": 1,
                     "maxLength": 64,
-                    "env": "TEMPLATE_API_HOSTNAME"
+                    "env": "CRON_EXTEND_API_HOSTNAME"
                 },
                 "port": {
                     "type": "integer",
                     "default": 3001,
-                    "env": "TEMPLATE_API_PORT",
+                    "env": "CRON_EXTEND_API_PORT",
                     "minimum": 1
                 },
                 "prefix": {
@@ -100,37 +100,37 @@
                     "default": "/api",
                     "minLength": 0,
                     "maxLength": 32,
-                    "env": "TEMPLATE_API_PREFIX",
+                    "env": "CRON_EXTEND_API_PREFIX",
                     "pattern": "^(\/[a-zA-Z]{1}|)[-a-zA-Z0-9\/]{0,31}$"
                 },
                 "backlog": {
                     "type": "integer",
                     "default": 511,
-                    "env": "TEMPLATE_API_BACKLOG",
+                    "env": "CRON_EXTEND_API_BACKLOG",
                     "minimum": 1
                 },
                 "connection_timeout": {
                     "type": "integer",
                     "default": 0,
-                    "env": "TEMPLATE_API_CONNECTION_TIMEOUT",
+                    "env": "CRON_EXTEND_API_CONNECTION_TIMEOUT",
                     "minimum": 0
                 },
                 "keep_alive_timeout": {
                     "type": "integer",
                     "default": 5000,
-                    "env": "TEMPLATE_API_KEEP_ALIVE_TIMEOUT",
+                    "env": "CRON_EXTEND_API_KEEP_ALIVE_TIMEOUT",
                     "minimum": 1
                 },
                 "body_limit": {
                     "type": "integer",
                     "default": 1048576,
-                    "env": "TEMPLATE_API_BODY_LIMIT",
+                    "env": "CRON_EXTEND_API_BODY_LIMIT",
                     "minimum": 1
                 },
                 "trust_proxy": {
                     "type": "boolean",
                     "default": false,
-                    "env": "TEMPLATE_API_TRUST_PROXY"
+                    "env": "CRON_EXTEND_API_TRUST_PROXY"
                 }
             },
             "required": [
@@ -143,6 +143,45 @@
                 "keep_alive_timeout",
                 "body_limit",
                 "trust_proxy"
+            ]
+        },
+        "manager": {
+            "type": "object",
+            "default": {},
+            "properties": {
+                "jobs_path": {
+                    "type": "string",
+                    "default": "jobs",
+                    "minLength": 1,
+                    "maxLength": 256,
+                    "env": "CRON_EXTEND_MANAGER_JOBS_PATH"
+                },
+                "tags": {
+                    "type": "array",
+                    "default": [],
+                    "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 32,
+                        "pattern": "[-a-zA-Z0-9_.]{1,32}$"
+                    },
+                    "minItems": 0
+                },
+                "env": {
+                    "type": "object",
+                    "default": {},
+                    "patternProperties": {
+                        "^[a-zA-Z0-9]{1}[-a-zA-Z0-9_]{0,63}": { 
+                            "type": "string",
+                            "minLength": 1
+                        }
+                    }
+                }
+            },
+            "required": [
+                "jobs_path",
+                "tags",
+                "env"
             ]
         }
     },

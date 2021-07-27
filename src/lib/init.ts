@@ -50,13 +50,13 @@ program.parse(process.argv);
 
 const options = program.opts();
 
-if (process.env["TEMPLATE_CONFIG_PATH"] === undefined) {
+if (process.env["CRON_EXTEND_CONFIG_PATH"] === undefined) {
 	if (options.config === undefined) {
 		console.error(`${chalk.red("ERROR")} Not set --config key`);
 		process.exit(1);
 	}
 } else {
-	options.config = process.env["TEMPLATE_CONFIG_PATH"];
+	options.config = process.env["CRON_EXTEND_CONFIG_PATH"];
 }
 
 const full_config_path = path.resolve(process.cwd(), options.config);
@@ -74,9 +74,7 @@ const validate = ajv.compile(config_schema);
 if (!validate(config)) {
     console.error(`${chalk.red("ERROR")} Config schema errors:`);
     for (const item of validate.errors) {
-
-console.log(item);
-        //console.error(`  - Key ${chalk.yellow(item.instancePath.replace(/\//, "").replace(/\//g, "."))} ${item.message}`);
+        console.error(`  - Key ${chalk.yellow(item.dataPath.replace(/\./g, ""))} ${item.message}`);
     }
     process.exit(1);
 }

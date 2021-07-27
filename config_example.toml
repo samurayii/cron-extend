@@ -1,5 +1,4 @@
 [logger]
-    name = ""                                                           # имя логгера
     levels = ["fatal","info","error","warn","debug","trace"]            # уровни логирования
     [logger.bindings]                                                   # дополнительные ключи
         key1 = "key1-val"
@@ -7,7 +6,7 @@
     [logger.output]                                                     # настройка отображения
         timestamp = "full"                                              # вывод времени full, short, unix и none
         levels = ["fatal","info","error","warn","debug","trace"]        # вывод типов
-        bindings = "bracket"                                            # отображение ключей square, bracket, none, no-wrapper
+        bindings = "no-wrapper"                                         # отображение ключей square, bracket, none, no-wrapper
 
 [api]
     enable = false              # активация API сервера
@@ -19,3 +18,11 @@
     keep_alive_timeout = 5000   # таймаут keep-alive сервера в милисекундах
     body_limit = 1048576        # максимальный размер тела запроса в байтах
     trust_proxy = false         # доверие proxy закголовку
+
+[manager]                       # настройки cron-manager
+    jobs_path = "jobs"          # путь до папки задач
+    tags = []                   # теги сервера
+    [manager.env]               # дополнительные переменые среды
+        CONFIG_ENV_KEY1 = "CONFIG_ENV_KEY1_VALUE"
+        CONFIG_ENV_KEY2 = "CONFIG_ENV_KEY2_VALUE"
+        CONFIG_ENV_KEY3 = "${CONFIG_ENV_KEY3}"

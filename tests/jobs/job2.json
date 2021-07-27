@@ -1,0 +1,18 @@
+{
+    "enable": true,
+    "description": "json job 2",
+    "timeout": 60,
+    "tags": [],
+    "cwd": "",
+    "command": "1",
+    "args": [],
+    "env": {
+        "JOB_KEY1": "JOB_KEY1_VALUE",
+        "JOB_KEY2": "JOB_KEY2_VALUE",
+        "JOB_KEY3": "${JOB_ENV_KEY3}"
+    },
+    "cron": {
+        "interval": "1 * * * * *",
+        "time_zone": "Europe/Moscow"
+    }
+}

@@ -1,7 +1,7 @@
 {
-    "name": "template",
-    "version": "0.0.1",
-    "description": "Template for nodejs app with fastify",
+    "name": "cron-extend",
+    "version": "0.1.1",
+    "description": "Cron jobs manager",
     "main": "app.js",
     "docker_image": "samuray/template",
     "scripts": {
@@ -26,28 +26,30 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/practic-report/template.git"
+        "url": "git+https://github.com/samurayii/cron-extend.git"
     },
     "keywords": [
-        "typescript",
-        "fastify",
-        "template"
+        "cron",
+        "job",
+        "administration"
     ],
     "author": "Nuzhnov A.A.",
     "license": "GNU GPLv3",
     "bugs": {
-        "url": "https://github.com/practic-report/template/issues"
+        "url": "https://github.com/samurayii/cron-extend/issues"
     },
-    "homepage": "https://github.com/practic-report/template.git#readme",
+    "homepage": "https://github.com/samurayii/cron-extend.git#readme",
     "devDependencies": {
         "@commitlint/cli": "^13.1.0",
         "@types/chai": "^4.2.21",
         "@types/chalk": "^2.2.0",
+        "@types/clone": "^2.1.1",
+        "@types/cron": "^1.7.3",
         "@types/jest": "^26.0.24",
-        "@types/node": "^16.4.1",
+        "@types/node": "^16.4.3",
         "@types/node-fetch": "^2.5.12",
-        "@typescript-eslint/eslint-plugin": "^4.28.4",
-        "@typescript-eslint/parser": "^4.28.4",
+        "@typescript-eslint/eslint-plugin": "^4.28.5",
+        "@typescript-eslint/parser": "^4.28.5",
         "chai": "^4.3.4",
         "commitizen": "^4.2.4",
         "cz-customizable": "^6.3.0",
@@ -59,7 +61,7 @@
         "node-fetch": "^2.6.1",
         "npm-check-updates": "^11.8.3",
         "rimraf": "^3.0.2",
-        "start-server-and-test": "^1.13.0",
+        "start-server-and-test": "^1.13.1",
         "ts-jest": "^27.0.4",
         "ts-node": "^10.1.0",
         "typescript": "^4.3.5"
@@ -114,7 +116,10 @@
     "dependencies": {
         "ajv": "^6.12.6",
         "chalk": "^4.1.1",
-        "commander": "^8.0.0",
+        "clone": "^2.1.2",
+        "commander": "^8.1.0",
+        "cron": "^1.8.2",
+        "di-ts-decorators": "^0.2.5",
         "fastify-helpers": "^0.1.5",
         "fastify-small-logger": "^1.4.4",
         "json-from-default-schema": "^1.0.0",

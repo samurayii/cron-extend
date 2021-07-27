@@ -1,4 +1,5 @@
 import { TFastifySmallLoggerConfig } from "fastify-small-logger";
+import { TCronJobManagerConfig } from "./cron-job-manager";
 
 export type TApiServerConfig = {
     enable: boolean
@@ -15,4 +16,5 @@ export type TApiServerConfig = {
 export interface IAppConfig {
     logger: TFastifySmallLoggerConfig
     api: TApiServerConfig
+    manager: TCronJobManagerConfig
 }

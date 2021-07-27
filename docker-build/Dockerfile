@@ -75,18 +75,19 @@ ENV NODE_ENV=production
 ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
 ENV PATH=$PATH:/home/node/.npm-global/bin
 
-WORKDIR /template
+WORKDIR /cron-extend
 
 ENTRYPOINT [ "node" ]
 CMD [ "app.js", "--config", "config.toml" ]
 
-COPY app /template
-COPY config.toml /template/config.toml
+COPY app /cron-extend
+COPY config.toml /cron-extend/config.toml
 
-RUN chown -R node:node /template
+RUN mkdir /cron-extend/jobs && \
+    chown -R node:node /cron-extend
 
 USER node
 
-RUN cd /template && \
+RUN cd /cron-extend && \
     npm ci && \
     node app.js -v

@@ -9,3 +9,11 @@
     hostname = "0.0.0.0"
     backlog = 511
     prefix = "/api"
+
+[manager]
+    jobs_path = "tests/jobs"
+    tags = []
+    [manager.env]
+        CONFIG_ENV_KEY1 = "CONFIG_ENV_KEY1_VALUE"
+        CONFIG_ENV_KEY2 = "CONFIG_ENV_KEY2_VALUE"
+        CONFIG_ENV_KEY3 = "${CONFIG_ENV_KEY3}"
