@@ -3,7 +3,7 @@
     "version": "0.1.1",
     "description": "Cron jobs manager",
     "main": "app.js",
-    "docker_image": "samuray/template",
+    "docker_image": "samuray/cron-extend",
     "scripts": {
         "prepare": "rimraf ./.husky && husky install && npm run prepare:commitlint",
         "prepare:commitlint": "npx husky add .husky/commit-msg \"npx --no-install commitlint --config _common/configs/commitlint.js --edit $1 --verbose\"",
