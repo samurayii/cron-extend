@@ -1,7 +1,8 @@
 
 
 export interface ICronJobManager {
-    readonly info: TCronJobManagerJobInfo[]
+    readonly info: ICronJobManagerJobInfo[]
+    readonly status: ICronJobManagerJobStatus[]
     job: (id: string) => ICronJobManagerJob
     run: () => Promise<void>
     stop: () => Promise<void>
@@ -9,19 +10,29 @@ export interface ICronJobManager {
 }
 
 export interface ICronJobManagerJob {
-    readonly info: TCronJobManagerJobInfo
+    readonly info: ICronJobManagerJobInfo
+    readonly status: ICronJobManagerJobStatus
     run: () => Promise<void>
     stop: () => Promise<void>
 }
 
-export type TCronJobManagerJobInfo = ICronJobManagerJobConfig & {
+export interface ICronJobManagerJobInfo extends ICronJobManagerJobConfig {
     id: string
     executing: boolean
-    error?: boolean
-    error_message?: string
+    error: boolean
+    error_message: string
 }
 
-export type TCronJobManagerConfig = {
+export interface ICronJobManagerJobStatus {
+    id: string
+    enable: boolean
+    description: string
+    executing: boolean
+    error: boolean
+    error_message: string
+}
+
+export interface ICronJobManagerConfig {
     jobs_path: string
     tags: string[]
     env: {
@@ -29,10 +40,10 @@ export type TCronJobManagerConfig = {
     }
 }
 
-export type ICronJobManagerJobConfig = {
+export interface ICronJobManagerJobConfig {
     enable: boolean
     description: string
-    timeout: number
+    timeout: string
     tags: string[]
     cwd: string
     command: string

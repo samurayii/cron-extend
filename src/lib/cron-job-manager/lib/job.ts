@@ -1,20 +1,21 @@
 import { IFastifySmallLogger } from "fastify-small-logger";
-import { ICronJobManagerJob, ICronJobManagerJobConfig, TCronJobManagerJobInfo } from "../interfaces";
+import { ICronJobManagerJob, ICronJobManagerJobConfig, ICronJobManagerJobInfo, ICronJobManagerJobStatus } from "../interfaces";
 import * as chalk from "chalk";
 import * as child_process from "child_process";
 import { CronJob } from "cron";
 import { ChildProcess } from "child_process";
 import * as clone from "clone";
+import { convertTime } from "../../tools/convert-time";
 
 export class CronJobManagerJob implements ICronJobManagerJob {
 
-    private _running_flag: boolean
-    private readonly _job: CronJob
-    private _interval: ReturnType<typeof setTimeout>
-    private _prc: ChildProcess
-    private _executing_flag: boolean
-    private _error_flag: boolean
-    private _error_message: string
+    private _running_flag: boolean;
+    private readonly _job: CronJob;
+    private _interval: ReturnType<typeof setTimeout>;
+    private _prc: ChildProcess;
+    private _executing_flag: boolean;
+    private _error_flag: boolean;
+    private _error_message: string;
 
     constructor (
         private readonly _id: string,
@@ -34,20 +35,20 @@ export class CronJobManagerJob implements ICronJobManagerJob {
             }
 
             this._executing_flag = true;
-            this._error_flag = false;
-            this._error_message = "";
 
             this._interval = setTimeout( async () => {
-                this._logger.warn(`Cron job ID ${chalk.cyan(this._id)} executing timeout ${this._config.timeout} sec is over`);
+                this._logger.error(`Cron job ID ${chalk.red(this._id)} executing timeout ${chalk.red(this._config.timeout)} is over`);
                 this._error_flag = true;
-                this._error_message = `Timeout ${this._config.timeout} sec is over`;
+                this._error_message = `Timeout ${this._config.timeout} is over`;
                 await this._close();
-            }, this._config.timeout*1000);
+            }, convertTime(this._config.timeout)*1000);
 
             try {
                 await this._exec();
+                this._error_flag = false;
+                this._error_message = "";
             } catch (error) {
-                this._logger.error(`Cron job ID ${chalk.cyan(this._id)} error: ${error.message}`);
+                this._logger.error(`Cron job ID ${chalk.red(this._id)} error: ${chalk.red(error.message)}`);
                 this._error_flag = true;
                 this._error_message = `${error}`;
             }
@@ -66,18 +67,25 @@ export class CronJobManagerJob implements ICronJobManagerJob {
         
     }
 
-    get info (): TCronJobManagerJobInfo {
-        const result = clone(this._config) as TCronJobManagerJobInfo;
-        
-        result.executing = this._executing_flag;
-        result.id = this._id;
+    get status (): ICronJobManagerJobStatus {
+        return {
+            id: this._id,
+            enable: this._config.enable,
+            description: this._config.description,
+            executing: this._executing_flag,
+            error: this._error_flag,
+            error_message: this._error_message,
+        };
+    }
 
-        if (this._error_flag === true) {
-            result.error = this._error_flag;
-            result.error_message = this._error_message;
-        }
-
-        return result;
+    get info (): ICronJobManagerJobInfo {
+        return {
+            ...this._config,
+            executing: this._executing_flag,
+            id: this._id,
+            error: this._error_flag,
+            error_message: this._error_message,
+        };
     }
 
     async run (): Promise<void> {

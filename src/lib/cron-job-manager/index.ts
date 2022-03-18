@@ -1,5 +1,5 @@
 import { IFastifySmallLogger } from "fastify-small-logger";
-import { ICronJobManager, ICronJobManagerJob, ICronJobManagerJobConfig, TCronJobManagerConfig, TCronJobManagerJobInfo } from "./interfaces";
+import { ICronJobManager, ICronJobManagerJob, ICronJobManagerJobConfig, ICronJobManagerConfig, ICronJobManagerJobInfo, ICronJobManagerJobStatus } from "./interfaces";
 import * as job_schema from "./lib/job_schema.json";
 import * as Ajv from "ajv";
 import * as fs from "fs";
@@ -40,10 +40,10 @@ export class CronJobManager implements ICronJobManager {
 
     private readonly _job_list: {
         [key: string]: ICronJobManagerJob
-    }
+    };
 
     constructor (
-        private readonly _config: TCronJobManagerConfig,
+        private readonly _config: ICronJobManagerConfig,
         private readonly _logger: IFastifySmallLogger
     ) {
 
@@ -52,8 +52,10 @@ export class CronJobManager implements ICronJobManager {
         const full_jobs_path = path.resolve(process.cwd(), this._config.jobs_path);
 
         if (fs.existsSync(full_jobs_path) === false) {
-            this._logger.fatal(`Jobs folder ${chalk.yellow(full_jobs_path)} not exist`);
-            process.exit(1);
+            fs.mkdirSync(full_jobs_path, {
+                recursive: true
+            });
+            this._logger.debug(`Folder ${chalk.gray(full_jobs_path)} created`);
         }
 
         try {
@@ -74,12 +76,12 @@ export class CronJobManager implements ICronJobManager {
                         for (const item of validate_job_schema.errors) {
                             errors += `\n  - Key ${chalk.yellow(item.dataPath.replace(/\./g, ""))} ${item.message}`;
                         }
-                        this._logger.error(`Config schema job ID ${chalk.yellow(id)} errors:${errors}`);
+                        this._logger.error(`Config schema job ID ${chalk.red(id)} errors:${errors}`);
                         continue;
                     }
 
                     if (this._job_list[id] !== undefined) {
-                        this._logger.error(`Cron job ID ${chalk.cyan(id)} already exist`);
+                        this._logger.error(`Cron job ID ${chalk.red(id)} already exist`);
                         continue;
                     }
 
@@ -92,7 +94,7 @@ export class CronJobManager implements ICronJobManager {
                     job_config.env = Object.assign(clone(job_config.env), clone(this._config.env));
 
                     if (fs.existsSync(job_config.cwd) === false) {
-                        this._logger.error(`Cron job ID ${chalk.cyan(id)}. Workdir ${chalk.yellow(job_config.cwd)} not exist. Job dropped`);
+                        this._logger.error(`Cron job ID ${chalk.red(id)}. Workdir ${chalk.red(job_config.cwd)} not exist. Job dropped`);
                         continue;
                     }
 
@@ -100,7 +102,7 @@ export class CronJobManager implements ICronJobManager {
 
                     for (const tag of job_config.tags) {
                         if (this._config.tags.includes(tag) === false) {
-                            this._logger.info(`Cron job ID ${chalk.cyan(id)} dropped. Tag ${chalk.yellow(tag)} not found`);
+                            this._logger.info(`Cron job ID ${chalk.cyan(id)} dropped. Tag ${chalk.cyan(tag)} not found`);
                             drop_flag = true;
                         }
                     }
@@ -110,7 +112,7 @@ export class CronJobManager implements ICronJobManager {
                     }
 
                 } catch (error) {
-                    this._logger.error(`Error parsing job file ${chalk.yellow(full_file_path)}. Error: ${chalk.red(error.message)}`);
+                    this._logger.error(`Error parsing job file ${chalk.red(full_file_path)}. Error: ${chalk.red(error.message)}`);
                 }
                 
             }
@@ -125,7 +127,16 @@ export class CronJobManager implements ICronJobManager {
 
     }
 
-    get info (): TCronJobManagerJobInfo[] {
+    get status (): ICronJobManagerJobStatus[] {
+        const result = [];
+        const jobs = Object.values(this._job_list);
+        for (const job of jobs) {
+            result.push(job.status);
+        }
+        return result;
+    }
+
+    get info (): ICronJobManagerJobInfo[] {
         const result = [];
         const jobs = Object.values(this._job_list);
         for (const job of jobs) {

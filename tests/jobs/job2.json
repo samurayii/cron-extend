@@ -1,7 +1,7 @@
 {
     "enable": true,
     "description": "json job 2",
-    "timeout": 60,
+    "timeout": "1m",
     "tags": [],
     "cwd": "",
     "command": "1",

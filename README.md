@@ -137,6 +137,7 @@ args = [                            # аргументы
 | / | GET | 200 | проверить здоровье сервиса | OK |
 | /healthcheck | GET | 200 | проверить здоровье сервиса | OK |
 | /v1/info | GET | 200 | получить информацию по задачам | [пример](#v1_info) |
+| /v1/status | GET | 200 | получить только статус по задачам | [пример](#v1_status) |
 
 ## Примеры ответов/запросов
 
@@ -184,7 +185,9 @@ args = [                            # аргументы
             "time_zone": "Europe/Moscow"
         },
         "executing": false,
-        "id": "job1.json"
+        "id": "job1.json",
+        "error": false,
+        "error_message": ""
     },
     {
         "enable": true,
@@ -208,6 +211,29 @@ args = [                            # аргументы
         },
         "executing": false,
         "id": "job2.toml",
+        "error": true,
+        "error_message": "Error: spawn 1 ENOENT"
+    }
+]
+```
+
+### <a name="v1_status"></a> Получить только статус по задачам: /v1/status
+
+```js
+[
+    {
+        "id": "job1.json",
+        "enable": false,
+        "description": "description job1.yml",
+        "executing": false,
+        "error": false,
+        "error_message": ""
+    },
+    {
+        "id": "job2.toml",
+        "enable": true,
+        "description": "json job 2",
+        "executing": false,
         "error": true,
         "error_message": "Error: spawn 1 ENOENT"
     }

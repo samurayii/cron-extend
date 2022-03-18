@@ -1,7 +1,7 @@
-import { TFastifySmallLoggerConfig } from "fastify-small-logger";
-import { TCronJobManagerConfig } from "./cron-job-manager";
+import { IFastifySmallLoggerConfig } from "fastify-small-logger";
+import { ICronJobManagerConfig } from "./cron-job-manager";
 
-export type TApiServerConfig = {
+export type IApiServerConfig = {
     enable: boolean
     port: number
     hostname: string
@@ -14,7 +14,7 @@ export type TApiServerConfig = {
 }
 
 export interface IAppConfig {
-    logger: TFastifySmallLoggerConfig
-    api: TApiServerConfig
-    manager: TCronJobManagerConfig
+    logger: IFastifySmallLoggerConfig
+    api: IApiServerConfig
+    manager: ICronJobManagerConfig
 }

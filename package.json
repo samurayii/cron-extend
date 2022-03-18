@@ -1,28 +1,19 @@
 {
     "name": "cron-extend",
-    "version": "0.1.1",
+    "version": "0.2.3",
     "description": "Cron jobs manager",
     "main": "app.js",
     "docker_image": "samuray/cron-extend",
     "scripts": {
-        "prepare": "rimraf ./.husky && husky install && npm run prepare:commitlint",
-        "prepare:commitlint": "npx husky add .husky/commit-msg \"npx --no-install commitlint --config _common/configs/commitlint.js --edit $1 --verbose\"",
-        "up": "ncu --reject ajv && ncu --reject ajv -u && rimraf ./package-lock.json && rimraf ./.husky && npm i && ncu --reject ajv",
+        "up": "ncu --reject ajv && ncu --reject ajv -u && rimraf ./package-lock.json && npm i && ncu --reject ajv",
         "ncu": "ncu --reject ajv",
-        "cz": "git add . && git cz",
         "pub": "npm run build && npm publish ./dist",
-        "build": "rimraf ./dist && tsc --project ./tsconfig.json && json-key-remover && files-copier -e build",
+        "build": "rimraf ./dist && tsc --project ./tsconfig.json && json-key-remover --config ./_common/remover.json && files-copier -e build",
         "start": "node ./dist/app.js --config ./config.toml",
         "start:dev": "ts-node ./src/app.ts --config ./config.toml",
-        "test:e2e": "start-server-and-test test:e2e:start_server http-get://localhost:3000/api/healthcheck test:e2e:testing",
-        "test:e2e:start_server": "ts-node ./src/app.ts --config ./tests/e2e/config.toml",
-        "test:e2e:testing": "jest --config ./tests/e2e.config.json",
-        "test": "npm run test:e2e",
-        "docker:build": "npm run build && files-copier -e docker:build && node ./docker-build/build.js",
-        "docker:push:version": "node ./docker-build/push_version.js",
-        "docker:push:latest": "node ./docker-build/push_latest.js",
-        "docker:tag": "node ./docker-build/tag.js",
-        "docker": "npm run docker:build && npm run docker:tag && npm run docker:push:version && npm run docker:push:latest"
+        "docker:build": "node ./_common/build/build.js",
+        "docker:publish": "npm run docker:build && node ./_common/build/tag.js && node ./_common/build/push_version.js && node ./_common/build/push_latest.js",
+        "interface_generator": "node ./_common/tools/interface_generator.js ./_common/interface_generator.json"
     },
     "repository": {
         "type": "git",
@@ -39,47 +30,23 @@
         "url": "https://github.com/samurayii/cron-extend/issues"
     },
     "homepage": "https://github.com/samurayii/cron-extend.git#readme",
-    "devDependencies": {
-        "@commitlint/cli": "^13.1.0",
-        "@types/chai": "^4.2.21",
-        "@types/chalk": "^2.2.0",
-        "@types/clone": "^2.1.1",
-        "@types/cron": "^1.7.3",
-        "@types/jest": "^26.0.24",
-        "@types/node": "^16.4.3",
-        "@types/node-fetch": "^2.5.12",
-        "@typescript-eslint/eslint-plugin": "^4.28.5",
-        "@typescript-eslint/parser": "^4.28.5",
-        "chai": "^4.3.4",
-        "commitizen": "^4.2.4",
-        "cz-customizable": "^6.3.0",
-        "eslint": "^7.31.0",
-        "files-copier": "^0.1.1",
-        "husky": "^7.0.1",
-        "jest": "^27.0.6",
-        "json-key-remover": "^0.0.3",
-        "node-fetch": "^2.6.1",
-        "npm-check-updates": "^11.8.3",
-        "rimraf": "^3.0.2",
-        "start-server-and-test": "^1.13.1",
-        "ts-jest": "^27.0.4",
-        "ts-node": "^10.1.0",
-        "typescript": "^4.3.5"
+    "optionalDependencies": {
+        "@commitlint/cli": "=16.2.1",
+        "@typescript-eslint/eslint-plugin": "=5.12.1",
+        "@typescript-eslint/parser": "=5.12.1",
+        "eslint": "=8.9.0",
+        "npm-check-updates": "=12.4.0",
+        "start-server-and-test": "=1.14.0",
+        "ts-node": "=10.5.0"
     },
-    "remover": {
-        "target": "./package.json",
-        "destination": "./dist/package.json",
-        "remove": [
-            "remover",
-            "devDependencies",
-            "main",
-            "scripts",
-            "keywords",
-            "homepage",
-            "bugs",
-            "copier",
-            "config"
-        ]
+    "devDependencies": {
+        "@types/clone": "^2.1.1",
+        "@types/cron": "=1.7.3",
+        "@types/node": "=17.0.21",
+        "files-copier": "^0.1.1",
+        "json-key-remover": "^0.1.4",
+        "rimraf": "=3.0.2",
+        "typescript": "=4.6.2"
     },
     "copier": {
         "build": {
@@ -105,24 +72,18 @@
             ]
         }
     },
-    "config": {
-        "commitizen": {
-            "path": "node_modules/cz-customizable"
-        },
-        "cz-customizable": {
-            "config": "_common/configs/commitizen.js"
-        }
-    },
     "dependencies": {
-        "ajv": "^6.12.6",
-        "chalk": "^4.1.1",
-        "clone": "^2.1.2",
-        "commander": "^8.1.0",
-        "cron": "^1.8.2",
+        "ajv": "=6.12.6",
+        "chalk": "=4.1.2",
+        "clone": "=2.1.2",
+        "commander": "=9.0.0",
+        "cron": "=1.8.2",
         "di-ts-decorators": "^0.2.5",
-        "fastify-helpers": "^0.1.5",
-        "fastify-small-logger": "^1.4.4",
-        "json-from-default-schema": "^1.0.0",
+        "fastify-helpers": "^0.2.6",
+        "fastify-small-logger": "^1.8.11",
+        "handlebars": "=4.7.7",
+        "https-proxy-agent": "=5.0.0",
+        "json-from-default-schema": "^1.0.1",
         "jtomler": "^1.0.1"
     }
 }
