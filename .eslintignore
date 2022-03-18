@@ -1,4 +1,0 @@
-dist/*
-**/*.d.ts
-src/types/
-docker-build

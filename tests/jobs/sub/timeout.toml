@@ -1,6 +1,0 @@
-enable = true
-description = "description sub/timeout"
-cwd = "tests/scripts"
-command = "node"
-timeout = "10s"
-args = ["timeout.js"]

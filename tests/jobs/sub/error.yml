@@ -1,6 +1,0 @@
-enable: true
-description: "description sub/error"
-cwd: "tests/scripts"
-command: "node"
-args:
-  - "error.js"

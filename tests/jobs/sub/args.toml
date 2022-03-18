@@ -1,5 +1,0 @@
-enable = true
-description = "description sub/args"
-cwd = "tests/scripts"
-command = "node"
-args = ["args.js", "arg1", "arg2"]

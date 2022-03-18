@@ -1,9 +1,0 @@
-[logger]
-    levels = ["fatal","info","error","warn"]
-    [logger.output]
-        timestamp = "none"
-        bindings = "none"
-        levels = ["fatal","info","error","warn"]
-
-[api]
-    enable = true
